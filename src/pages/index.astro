@@ -1,11 +1,37 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Base from "../layouts/Base.astro";
+import PublicationCard from "../components/PublicationCard.astro";
+import { publications } from "../data/publications";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const sorted = [...publications].sort((a, b) => b.year - a.year);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<Base
+  title="Scott Biggs"
+  description="Scott Biggs — MS in AI student and researcher at Northeastern University. Research interests: reinforcement learning, diffusion and flow matching, weight space generation."
+>
+  <!-- To add a banner image, add: <img slot="banner" src="/banner.jpg" alt="" /> inside Base -->
+
+  <h1>Scott Biggs</h1>
+  <p class="tagline">MS in AI Student / Researcher — Northeastern University</p>
+
+  <nav aria-label="Profiles and links">
+    <a href="https://github.com/ScottBiggs2" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://huggingface.co/ScottBiggs2" target="_blank" rel="noopener noreferrer">HuggingFace</a>
+    <a href="https://scholar.google.com/citations?hl=en&user=CH66jrwAAAAJ" target="_blank" rel="noopener noreferrer">Google Scholar</a>
+  </nav>
+
+  <section>
+    <h2>About</h2>
+    <p>
+      Hi everyone, I'm Scott. Currently, I'm an MS in AI student at Northeastern University in Silicon Valley. 
+      I have research and startup experience, and my ongoing research interests include reinforcement learning, diffusion and flow matching models, and weight space generation and analysis. 
+    </p>
+  </section>
+
+  <section>
+    <h2>Publications</h2>
+    {sorted.map(pub => <PublicationCard pub={pub} />)}
+  </section>
+
+</Base>

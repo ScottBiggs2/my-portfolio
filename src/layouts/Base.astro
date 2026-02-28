@@ -1,0 +1,62 @@
+---
+const { title, description } = Astro.props;
+---
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style is:global>
+      *, *::before, *::after { box-sizing: border-box; }
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 1.5rem 4rem;
+        color: #111;
+        line-height: 1.7;
+        background: #e8e8e8;
+      }
+      a { color: #111; }
+      a:hover { text-decoration: underline; }
+      a:focus-visible {
+        outline: 2px solid #111;
+        outline-offset: 2px;
+      }
+      h1 { font-size: 1.9rem; margin-bottom: 0.25rem; font-weight: 700; }
+      h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid #bbb; padding-bottom: 0.35rem; font-weight: 600; }
+      .site-header { padding-top: 0.5rem; }
+      .tagline { margin: 0; font-size: 0.95rem; color: #333; }
+      nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0.75rem 0 2rem; font-size: 0.9rem; }
+      nav a { text-decoration: none; color: #333; }
+      nav a:hover { color: #111; text-decoration: underline; }
+      .banner {
+        width: 100%;
+        min-height: 200px;
+        margin-bottom: 2rem;
+        background: #d8d8d8;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .banner :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        max-height: 280px;
+      }
+      main { padding-bottom: 2rem; }
+    </style>
+  </head>
+  <body>
+    <header class="banner" aria-label="Banner">
+      <slot name="banner" />
+    </header>
+    <main class="site-header">
+      <slot />
+    </main>
+  </body>
+</html>
