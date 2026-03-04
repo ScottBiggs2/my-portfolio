@@ -20,20 +20,20 @@ const { pub } = Astro.props as { pub: Publication };
 
 <style>
   .pub-card {
-    border-left: 3px solid #333;
+    border-left: 3px solid var(--card-border);
     padding: 1.25rem 1.5rem;
     margin-bottom: 2rem;
-    background: #f5f5f5;
+    background: var(--card-bg);
     border-radius: 0 6px 6px 0;
   }
-  h3 { margin: 0 0 0.35rem; font-size: 1.08rem; font-weight: 600; color: #111; line-height: 1.35; }
-  .authors { margin: 0; color: #333; font-size: 0.9rem; }
-  .venue { margin: 0.2rem 0 0.75rem; font-size: 0.85rem; color: #444; font-style: italic; }
-  .abstract { font-size: 0.9rem; line-height: 1.6; color: #333; margin-top: 0.5rem; }
+  h3 { margin: 0 0 0.35rem; font-size: 1.08rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .authors { margin: 0; color: var(--muted-text); font-size: 0.9rem; }
+  .venue { margin: 0.2rem 0 0.75rem; font-size: 0.85rem; color: var(--muted-text); font-style: italic; }
+  .abstract { font-size: 0.9rem; line-height: 1.6; color: var(--text); margin-top: 0.5rem; }
   .abstract-details summary {
     cursor: pointer;
     font-size: 0.85rem;
-    color: #333;
+    color: var(--muted-text);
     list-style: none;
   }
   .abstract-details summary::-webkit-details-marker { display: none; }
@@ -47,12 +47,14 @@ const { pub } = Astro.props as { pub: Publication };
   .links a {
     font-size: 0.8rem;
     padding: 0.35rem 0.75rem;
-    background: #111;
-    color: #e8e8e8;
+    background: var(--card-link-bg);
+    color: var(--card-link-text);
     border-radius: 999px;
     text-decoration: none;
   }
-  .links a:hover { background: #333; color: #fff; }
+  .links a:hover {
+    filter: brightness(1.1);
+  }
   .links a:focus-visible {
     outline: 2px solid #111;
     outline-offset: 2px;

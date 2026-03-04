@@ -10,53 +10,129 @@ const { title, description } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <style is:global>
       *, *::before, *::after { box-sizing: border-box; }
+      :root {
+        color-scheme: light dark;
+        --bg: #e8e8e8;
+        --surface: #f5f5f5;
+        --text: #111111;
+        --muted-text: #4b5563;
+        --border-subtle: #d4d4d4;
+        --accent: #111111;
+        --link: #111111;
+        --card-bg: #f5f5f5;
+        --card-border: #333333;
+        --card-link-bg: #111111;
+        --card-link-text: #e8e8e8;
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #020617;
+        --surface: #020617;
+        --text: #e5e7eb;
+        --muted-text: #9ca3af;
+        --border-subtle: #1f2937;
+        --accent: #e5e7eb;
+        --link: #e5e7eb;
+        --card-bg: #020617;
+        --card-border: #4b5563;
+        --card-link-bg: #e5e7eb;
+        --card-link-text: #020617;
+      }
+      html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
       body {
         font-family: Georgia, "Times New Roman", serif;
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 0 1.5rem 4rem;
-        color: #111;
+        margin: 0;
+        padding: 0;
+        color: var(--text);
         line-height: 1.7;
-        background: #e8e8e8;
+        background: var(--bg);
       }
-      a { color: #111; }
+      a { color: var(--link); }
       a:hover { text-decoration: underline; }
       a:focus-visible {
-        outline: 2px solid #111;
+        outline: 2px solid var(--accent);
         outline-offset: 2px;
       }
-      h1 { font-size: 1.9rem; margin-bottom: 0.25rem; font-weight: 700; }
-      h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid #bbb; padding-bottom: 0.35rem; font-weight: 600; }
-      .site-header { padding-top: 0.5rem; }
-      .tagline { margin: 0; font-size: 0.95rem; color: #333; }
-      nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0.75rem 0 2rem; font-size: 0.9rem; }
-      nav a { text-decoration: none; color: #333; }
-      nav a:hover { color: #111; text-decoration: underline; }
       .banner {
         width: 100%;
-        min-height: 200px;
-        margin-bottom: 2rem;
-        background: #d8d8d8;
+        max-width: 100vw;
         overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background: #d8d8d8;
+        line-height: 0;
       }
       .banner :global(img) {
+        max-width: 100%;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
-        max-height: 280px;
+        height: auto;
+        display: block;
+        vertical-align: bottom;
       }
+      .content-wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+      h1 { font-size: 1.9rem; margin-bottom: 0.25rem; font-weight: 700; }
+      h2 {
+        font-size: 1.25rem;
+        margin: 2.5rem 0 1rem;
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 0.35rem;
+        font-weight: 600;
+      }
+      .site-header { padding-top: 0; }
+      .tagline { margin: 0; font-size: 0.95rem; color: var(--muted-text); }
+      nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0.75rem 0 2rem; font-size: 0.9rem; }
+      nav a { text-decoration: none; color: var(--muted-text); }
+      nav a:hover { color: var(--link); text-decoration: underline; }
       main { padding-bottom: 2rem; }
     </style>
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark =
+            window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var initial = stored || (prefersDark ? "dark" : "light");
+          document.documentElement.dataset.theme = initial;
+
+          window.addEventListener("DOMContentLoaded", function () {
+            var toggle = document.querySelector("[data-theme-toggle]");
+            if (!toggle) return;
+
+            function setLabel(theme) {
+              toggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+              toggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+            }
+
+            setLabel(initial);
+
+            toggle.addEventListener("click", function () {
+              var current =
+                document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+              var next = current === "dark" ? "light" : "dark";
+              document.documentElement.dataset.theme = next;
+              localStorage.setItem("theme", next);
+              setLabel(next);
+            });
+          });
+        } catch (e) {
+          // fail silently if localStorage or matchMedia is unavailable
+        }
+      })();
+    </script>
   </head>
   <body>
     <header class="banner" aria-label="Banner">
       <slot name="banner" />
     </header>
-    <main class="site-header">
-      <slot />
-    </main>
+    <div class="content-wrap">
+      <main class="site-header">
+        <slot />
+      </main>
+    </div>
   </body>
 </html>
