@@ -1,13 +1,17 @@
 ---
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PublicationCard from "../components/PublicationCard.astro";
 import { publications } from "../data/publications";
-import { blogPosts } from "../data/blog";
 
 const sortedPubs = [...publications].sort((a, b) => b.year - a.year);
-const sortedPosts = [...blogPosts].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+const blogEntries = await getCollection("blog", ({ data }) => !data.draft);
+const sortedPosts = blogEntries.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 ---
 
 <Base
@@ -71,14 +75,12 @@ const sortedPosts = [...blogPosts].sort(
             <ul class="blog-list">
               {sortedPosts.map((post) => (
                 <li class="blog-item">
-                  <h3>{post.title}</h3>
-                  <p class="blog-meta">{post.date}</p>
-                  <p class="blog-summary">{post.summary}</p>
-                  {post.link && (
-                    <a href={post.link} target="_blank" rel="noopener noreferrer">
-                      Read more
-                    </a>
-                  )}
+                  <h3>
+                    <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                  </h3>
+                  <p class="blog-meta">{formatDate(post.data.pubDate)}</p>
+                  <p class="blog-summary">{post.data.description}</p>
+                  <a href={`/blog/${post.id}`}>Read post</a>
                 </li>
               ))}
             </ul>
@@ -189,6 +191,15 @@ const sortedPosts = [...blogPosts].sort(
     .blog-item h3 {
       margin: 0 0 0.25rem;
       font-size: 1rem;
+    }
+
+    .blog-item h3 a {
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .blog-item h3 a:hover {
+      text-decoration: underline;
     }
 
     .blog-meta {

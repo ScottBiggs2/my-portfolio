@@ -1,0 +1,148 @@
+---
+import "katex/dist/katex.min.css";
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const pub = post.data.pubDate;
+const dateLabel = pub.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Base title={`${post.data.title} — Scott Biggs`} description={post.data.description}>
+  <article class="blog-post">
+    <p class="blog-back">
+      <a href="/#blog">← Back to home</a>
+    </p>
+    <header class="blog-post-header">
+      <h1>{post.data.title}</h1>
+      <p class="blog-post-meta">{dateLabel}</p>
+      <p class="blog-post-lede">{post.data.description}</p>
+    </header>
+    <div class="blog-prose">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .blog-back {
+    margin: 0 0 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .blog-back a {
+    text-decoration: none;
+    color: var(--muted-text);
+  }
+
+  .blog-back a:hover {
+    color: var(--link);
+    text-decoration: underline;
+  }
+
+  .blog-post-header h1 {
+    font-size: 1.75rem;
+    margin: 0 0 0.5rem;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .blog-post-meta {
+    margin: 0 0 1rem;
+    font-size: 0.85rem;
+    color: var(--muted-text);
+  }
+
+  .blog-post-lede {
+    margin: 0 0 1.5rem;
+    font-size: 1rem;
+    color: var(--muted-text);
+    line-height: 1.6;
+  }
+
+  .blog-prose {
+    font-size: 0.98rem;
+  }
+
+  .blog-prose :global(h2) {
+    font-size: 1.2rem;
+    margin: 2rem 0 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.25rem;
+  }
+
+  .blog-prose :global(h3) {
+    font-size: 1.05rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .blog-prose :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .blog-prose :global(ul),
+  .blog-prose :global(ol) {
+    margin: 0 0 1rem 1.25rem;
+    padding: 0;
+  }
+
+  .blog-prose :global(li) {
+    margin-bottom: 0.35rem;
+  }
+
+  .blog-prose :global(a) {
+    text-decoration: underline;
+  }
+
+  .blog-prose :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .blog-prose :global(pre) {
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    margin: 0 0 1rem;
+  }
+
+  .blog-prose :global(pre code) {
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .blog-prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .blog-prose :global(blockquote) {
+    margin: 0 0 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--border-subtle);
+    color: var(--muted-text);
+  }
+</style>
